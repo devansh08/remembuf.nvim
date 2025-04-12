@@ -41,13 +41,27 @@ function M.restore_sizes(windows)
   end
 end
 
+---@class RemembufOpts
+---@field silent boolean Silence messages; except errors [default = true]
+
+--- @param opts RemembufOpts
 function M.setup(opts)
+  opts = {
+    silent = opts.silent or true,
+  }
+
   local save_sizes = function()
     M.save_sizes(vim.api.nvim_tabpage_list_wins(0))
+    if not opts.silent then
+      print("Saved sizes!")
+    end
   end
 
   local restore_sizes = function()
     M.restore_sizes(vim.api.nvim_tabpage_list_wins(0))
+    if not opts.silent then
+      print("Restored sizes!")
+    end
   end
 
   vim.api.nvim_create_user_command("SaveSizes", save_sizes, {})
