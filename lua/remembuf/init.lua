@@ -41,13 +41,20 @@ function M.restore_sizes(windows)
   end
 end
 
+---@class RemembufIntegrations
+---@field nvim_tree boolean Enable nvim-tree integrations. If enabled, the plugin will auto save the sizes before the nvim-tree window opens; and will restore the sizes after it closes. [default = false]
+
 ---@class RemembufOpts
 ---@field silent boolean Silence messages; except errors [default = true]
+---@field integrations RemembufIntegrations
 
 --- @param opts RemembufOpts
 function M.setup(opts)
   opts = {
     silent = opts.silent or true,
+    integrations = opts.integrations or {
+      nvim_tree = false,
+    },
   }
 
   local save_sizes = function()
@@ -66,6 +73,17 @@ function M.setup(opts)
 
   vim.api.nvim_create_user_command("SaveSizes", save_sizes, {})
   vim.api.nvim_create_user_command("RestoreSizes", restore_sizes, {})
+
+  if opts.integrations.nvim_tree == true then
+    local ok, api = pcall(require, "nvim-tree.api")
+    if not ok then
+      print("Failed to require `nvim-tree.api`. `nvim-tree` plugin is likely not installed.")
+    else
+      local Event = api.events.Event
+
+      api.events.subscribe(Event.TreePreOpen, save_sizes)
+      api.events.subscribe(Event.TreeClose, restore_sizes)
+    end
   end
 end
 
