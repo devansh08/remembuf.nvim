@@ -51,7 +51,7 @@ end
 --- @param opts RemembufOpts
 function M.setup(opts)
   opts = {
-    silent = opts.silent or true,
+    silent = opts.silent == nil and true or opts.silent,
     integrations = opts.integrations or {
       nvim_tree = false,
     },
