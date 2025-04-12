@@ -3,6 +3,25 @@ local M = {}
 ---@type table
 M.remembuf = {}
 
+--- This function filters out invalid windows for this plugin's context
+--- Invalid windows include non-focusable windows created by plugins like `nvim-treesitter-context`
+---@param windows integer[]
+---@return integer[]
+function M.get_valid_windows(windows)
+  ---@type integer[]
+  local valid_windows = {}
+
+  for _, id in ipairs(windows) do
+    ---@type vim.api.keyset.win_config
+    local config = vim.api.nvim_win_get_config(id)
+    if config.focusable == true then
+      table.insert(valid_windows, id)
+    end
+  end
+
+  return valid_windows
+end
+
 ---@param windows integer[]
 function M.save_sizes(windows)
   ---@type table, table
@@ -58,14 +77,14 @@ function M.setup(opts)
   }
 
   local save_sizes = function()
-    M.save_sizes(vim.api.nvim_tabpage_list_wins(0))
+    M.save_sizes(M.get_valid_windows(vim.api.nvim_tabpage_list_wins(0)))
     if not opts.silent then
       print("Saved sizes!")
     end
   end
 
   local restore_sizes = function()
-    M.restore_sizes(vim.api.nvim_tabpage_list_wins(0))
+    M.restore_sizes(M.get_valid_windows(vim.api.nvim_tabpage_list_wins(0)))
     if not opts.silent then
       print("Restored sizes!")
     end
