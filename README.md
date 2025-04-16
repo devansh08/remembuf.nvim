@@ -1,7 +1,7 @@
 # remembuf.nvim
 
-Simple plugin to remember the sizes of combinations of splits/windows in a tab page and restore them.
-This should help avoiding resetting of split sizes when new/existing splits are opened/closed respectively (e.g.: Opening nvim-tree etc.).
+Simple plugin to remember the sizes splits/windows layouts in a tab page and restore them.
+This should help avoid resetting of split sizes when new/existing splits are opened/closed (e.g.: Opening nvim-tree etc.).
 
 ## Installation
 
@@ -29,4 +29,5 @@ The plugin provides two commands `:SaveSizes` & `:RestoreSizes` to save & restor
 ### [nvim-tree](https://github.com/nvim-tree/nvim-tree.lua)
 
 Enabling this integration sets up auto saving *before* the nvim-tree window opens and auto restoring the previous layout *after* it closes.
+
 *Note*: This requires the `TreePreOpen` event of `nvim-tree`, added in this PR: [#3105](https://github.com/nvim-tree/nvim-tree.lua/pull/3105)
