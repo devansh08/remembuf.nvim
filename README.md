@@ -11,14 +11,14 @@ For example, with `lazy.nvim`:
 ```lua
 {
   "devansh08/remembuf.nvim",
-  ---@type RemembufOpts
+  branch = "main",
   opts = {
     silent = true, -- Silences messages; except errors [default = true]
     integrations = {
       nvim_tree = true, -- Enable nvim-tree integrations. If enabled, the plugin will auto save the sizes before the nvim-tree window opens; and will restore the sizes after it closes. [default = false]
     },
   },
-},
+}
 ```
 
 ## Usage
