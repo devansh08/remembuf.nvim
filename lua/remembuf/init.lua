@@ -61,10 +61,14 @@ function M.restore_sizes(windows)
 end
 
 ---@class RemembufIntegrations
----@field nvim_tree boolean Enable nvim-tree integrations. If enabled, the plugin will auto save the sizes before the nvim-tree window opens; and will restore the sizes after it closes. [default = false]
+--- Enable integrations with `nvim-tree` plugin.
+--- If enabled, the plugin will auto save the sizes before the nvim-tree window opens;
+--- and will restore the sizes after it closes. [default = false]
+---@field nvim_tree boolean
 
 ---@class RemembufOpts
----@field silent boolean Silence messages; except errors [default = true]
+--- Silence messages; except errors [default = true]
+---@field silent boolean
 ---@field integrations RemembufIntegrations
 
 --- @param opts RemembufOpts
