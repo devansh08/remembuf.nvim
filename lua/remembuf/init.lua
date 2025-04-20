@@ -1,13 +1,13 @@
 local M = {}
 
 ---@type table
-M.remembuf = {}
+local remembuf = {}
 
 --- This function filters out invalid windows for this plugin's context
 --- Invalid windows include non-focusable windows created by plugins like `nvim-treesitter-context`
 ---@param windows integer[]
 ---@return integer[]
-function M.get_valid_windows(windows)
+local function get_valid_windows(windows)
   ---@type integer[]
   local valid_windows = {}
 
@@ -23,7 +23,7 @@ function M.get_valid_windows(windows)
 end
 
 ---@param windows integer[]
-function M.save_sizes(windows)
+local function save_sizes(windows)
   ---@type table, table
   local keys, values = {}, {}
 
@@ -36,10 +36,10 @@ function M.save_sizes(windows)
   ---@type string
   local key = table.concat(keys, "|")
 
-  M.remembuf[key] = values
+  remembuf[key] = values
 end
 
-function M.restore_sizes(windows)
+local function restore_sizes(windows)
   ---@type table
   local keys = {}
 
@@ -51,7 +51,7 @@ function M.restore_sizes(windows)
   local key = table.concat(keys, "|")
 
   ---@type table
-  local vals = M.remembuf[key]
+  local vals = remembuf[key]
   if vals ~= nil then
     for i = 1, #vals / 2 do
       vim.api.nvim_win_set_width(keys[i], vals[i * 2 - 1])
@@ -80,22 +80,22 @@ function M.setup(opts)
     },
   }
 
-  local save_sizes = function()
-    M.save_sizes(M.get_valid_windows(vim.api.nvim_tabpage_list_wins(0)))
+  local save_sizes_wrap = function()
+    save_sizes(get_valid_windows(vim.api.nvim_tabpage_list_wins(0)))
     if not opts.silent then
       print("Saved sizes!")
     end
   end
 
-  local restore_sizes = function()
-    M.restore_sizes(M.get_valid_windows(vim.api.nvim_tabpage_list_wins(0)))
+  local restore_sizes_wrap = function()
+    restore_sizes(get_valid_windows(vim.api.nvim_tabpage_list_wins(0)))
     if not opts.silent then
       print("Restored sizes!")
     end
   end
 
-  vim.api.nvim_create_user_command("SaveSizes", save_sizes, {})
-  vim.api.nvim_create_user_command("RestoreSizes", restore_sizes, {})
+  vim.api.nvim_create_user_command("SaveSizes", save_sizes_wrap, {})
+  vim.api.nvim_create_user_command("RestoreSizes", restore_sizes_wrap, {})
 
   if opts.integrations.nvim_tree == true then
     local ok, api = pcall(require, "nvim-tree.api")
@@ -104,8 +104,8 @@ function M.setup(opts)
     else
       local Event = api.events.Event
 
-      api.events.subscribe(Event.TreePreOpen, save_sizes)
-      api.events.subscribe(Event.TreeClose, restore_sizes)
+      api.events.subscribe(Event.TreePreOpen, save_sizes_wrap)
+      api.events.subscribe(Event.TreeClose, restore_sizes_wrap)
     end
   end
 end
