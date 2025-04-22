@@ -60,6 +60,17 @@ local function restore_sizes(windows)
   end
 end
 
+local function zoom(current_win, windows)
+  save_sizes(windows)
+
+  for _, id in ipairs(windows) do
+    if id ~= current_win then
+      vim.api.nvim_win_set_width(id, 0)
+      vim.api.nvim_win_set_height(id, 0)
+    end
+  end
+end
+
 ---@class RemembufIntegrations
 --- Enable integrations with `nvim-tree` plugin.
 --- If enabled, the plugin will auto save the sizes before the nvim-tree window opens;
@@ -94,8 +105,25 @@ function M.setup(opts)
     end
   end
 
+  local zoomWindow = function()
+    zoom(vim.api.nvim_get_current_win(), get_valid_windows(vim.api.nvim_tabpage_list_wins(0)))
+    if not opts.silent then
+      print("Zoomed in!")
+    end
+  end
+
+  local unzoomWindow = function()
+    restore_sizes(get_valid_windows(vim.api.nvim_tabpage_list_wins(0)))
+    if not opts.silent then
+      print("Zoomed out!")
+    end
+  end
+
   vim.api.nvim_create_user_command("SaveSizes", save_sizes_wrap, {})
   vim.api.nvim_create_user_command("RestoreSizes", restore_sizes_wrap, {})
+
+  vim.api.nvim_create_user_command("ZoomWindow", zoomWindow, {})
+  vim.api.nvim_create_user_command("UnzoomWindow", unzoomWindow, {})
 
   if opts.integrations.nvim_tree == true then
     local ok, api = pcall(require, "nvim-tree.api")

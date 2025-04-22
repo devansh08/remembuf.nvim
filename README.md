@@ -1,6 +1,7 @@
 # remembuf.nvim
 
 Simple plugin to remember the sizes splits/windows layouts in a tab page and restore them.
+It also provides commands to zoom and unzoom windows (like tmux).
 This should help avoid resetting of split sizes when new/existing splits are opened/closed (e.g.: Opening nvim-tree etc.).
 
 ## Installation
@@ -28,6 +29,8 @@ For example, with `lazy.nvim`:
 ## Usage
 
 The plugin provides two commands `:SaveSizes` & `:RestoreSizes` to save & restore the sizes of the splits/windows in the current tab page, respectively.
+
+It also provide two commands `:ZoomWindow` & `:UnzoomWindow` to zoom into a current window (like tmux) and undo that, respectively.
 
 ## Integration
 ### [nvim-tree](https://github.com/nvim-tree/nvim-tree.lua)
